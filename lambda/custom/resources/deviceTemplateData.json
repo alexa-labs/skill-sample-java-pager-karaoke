@@ -1,0 +1,16 @@
+{
+  "deviceTemplateData": {
+    "type": "object",
+    "objectId": "deviceSample",
+    "properties": {
+      "deviceName": "",
+      "hintString" : "try and buy more devices!"
+    },
+    "transformers": [
+      {
+        "inputPath": "hintString",
+        "transformer": "textToHint"
+      }
+    ]
+  }
+}

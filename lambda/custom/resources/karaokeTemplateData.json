@@ -1,0 +1,26 @@
+{
+  "karaokeTemplateData": {
+    "type": "object",
+    "objectId": "karaokeSample",
+    "properties": {
+      "karaokeSsml": "<speak>We’re excited to announce a new video training series from A Cloud Guru on Alexa skill development. The free training series called Alexa Devs walks new developers and non-developers through how to build Alexa skills from start to finish. You’ll also learn how to enhance your skill using persistence, Speechcons, and SSML to create more engaging voice experiences for customers. Check out the first episode on how to build your first Alexa skill here.</speak>",
+      "hintString" : "try the blue cheese!"
+    },
+    "transformers": [
+      {
+        "inputPath": "karaokeSsml",
+        "outputName": "karaokeSpeech",
+        "transformer": "ssmlToSpeech"
+      },
+      {
+        "inputPath": "karaokeSsml",
+        "outputName": "karaokeText",
+        "transformer": "ssmlToText"
+      },
+      {
+        "inputPath": "hintString",
+        "transformer": "textToHint"
+      }
+    ]
+  }
+}

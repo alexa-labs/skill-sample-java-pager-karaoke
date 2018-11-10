@@ -1,0 +1,14 @@
+{
+  "pagerTemplateData": {
+    "type": "object",
+    "properties": {
+      "hintString" : "try the blue cheese!"
+    },
+    "transformers": [
+      {
+        "inputPath": "hintString",
+        "transformer": "textToHint"
+      }
+    ]
+  }
+}
