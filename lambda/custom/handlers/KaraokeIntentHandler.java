@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.amazon.ask.request.Predicates.intentName;
+import static handlers.Util.supportsApl;
 
 public class KaraokeIntentHandler implements RequestHandler {
     @Override
@@ -28,36 +29,46 @@ public class KaraokeIntentHandler implements RequestHandler {
 
     @Override
     public Optional<Response> handle(HandlerInput input) {
-        String speechText = "This is the karaoke template!";
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            TypeReference<HashMap<String, Object>> documentMapType = new TypeReference<HashMap<String, Object>>() { };
-            Map<String, Object> document = mapper.readValue(new File("karaoke.json"), documentMapType);
+        String noAplSpeechtext = "This is a sample for multimodal devices. Try it on an Echo Show, Echo Spot or a Fire TV device.";
 
-            TypeReference<HashMap<String, Object>> dataSourceMapType = new TypeReference<HashMap<String, Object>>() { };
-            Map<String, Object> dataSource = mapper.readValue(new File("karaokeTemplateData.json"), dataSourceMapType);
+        if (supportsApl(input)) {
+            String speechText = "This is the karaoke template!";
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                TypeReference<HashMap<String, Object>> documentMapType = new TypeReference<HashMap<String, Object>>() {
+                };
+                Map<String, Object> document = mapper.readValue(new File("karaoke.json"), documentMapType);
 
-            RenderDocumentDirective documentDirective = RenderDocumentDirective.builder()
-                    .withToken("karaokeToken")
-                    .withDocument(document)
-                    .withDatasources(dataSource)
-                    .build();
+                TypeReference<HashMap<String, Object>> dataSourceMapType = new TypeReference<HashMap<String, Object>>() {
+                };
+                Map<String, Object> dataSource = mapper.readValue(new File("karaokeTemplateData.json"), dataSourceMapType);
 
-            ExecuteCommandsDirective commandsDirective = ExecuteCommandsDirective.builder()
-                    .withToken("karaokeToken")
-                    .withCommands(Collections.singletonList(SpeakItemCommand.builder()
-                            .withComponentId("karaokeSpeechText")
-                            .withHighlightMode(HighlightMode.LINE)
-                            .build()))
-                    .build();
+                RenderDocumentDirective documentDirective = RenderDocumentDirective.builder()
+                        .withToken("karaokeToken")
+                        .withDocument(document)
+                        .withDatasources(dataSource)
+                        .build();
 
+                ExecuteCommandsDirective commandsDirective = ExecuteCommandsDirective.builder()
+                        .withToken("karaokeToken")
+                        .withCommands(Collections.singletonList(SpeakItemCommand.builder()
+                                .withComponentId("karaokeSpeechText")
+                                .withHighlightMode(HighlightMode.LINE)
+                                .build()))
+                        .build();
+
+                return input.getResponseBuilder()
+                        .withSpeech(speechText)
+                        .addDirective(documentDirective)
+                        .addDirective(commandsDirective)
+                        .build();
+            } catch (IOException e) {
+                throw new AskSdkException("Unable to read or deserialize karaoke data", e);
+            }
+        } else {
             return input.getResponseBuilder()
-                    .withSpeech(speechText)
-                    .addDirective(documentDirective)
-                    .addDirective(commandsDirective)
+                    .withSpeech(noAplSpeechtext)
                     .build();
-        } catch (IOException e) {
-            throw new AskSdkException("Unable to read or deserialize karaoke data", e);
         }
     }
 }
