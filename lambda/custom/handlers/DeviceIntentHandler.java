@@ -45,6 +45,9 @@ public class DeviceIntentHandler implements RequestHandler {
                 case HUB_LANDSCAPE_MEDIUM:
                     speechText += "hub landscape medium";
                     break;
+                case HUB_LANDSCAPE_SMALL:
+                    speechText += "hub landscape small";
+                    break;
                 case HUB_ROUND_SMALL:
                     speechText += "hub round small";
                     break;
